@@ -1,0 +1,771 @@
+CC = g++
+CCFLAGS_Normal = -Wall -g --std=c++11 -O3 -DNDEBUG #-DVERBOSE 
+CCFLAGS_warm_start = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart #-DVERBOSE 
+CCFLAGS_ArcRemoval = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DArcRemoval #-DVERBOSE
+CCFLAGS_new_init = -Wall -g --std=c++11 -O3 -DNDEBUG -DNew_Initialization  -DWarmStart
+CCFLAGS_Elec_with_arc_removal_without_ws = -Wall -g --std=c++11 -O3 -DNDEBUG -DArcRemoval -DRecordElectricalFlowIterations
+CCFLAGS_Elec_without_arc_removal_with_ws = -Wall -g --std=c++11 -O3 -DWarmStart -DRecordElectricalFlowIterations -DNDEBUG
+CCFLAGS_PotentialAtArcRemoval = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DArcRemoval -DInvestigatePotentialAtArcRemoval #-DVERBOSE 
+CCFLAGS_Warm_Start_Effect =  -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DWarmStartEffect #-DVERBOSE
+CCFLAGS_rho = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DRecordr_min -DArcRemoval -DInvestigatePotentialAtArcRemoval #-DVERBOSE
+CCFLAGS_rho_new_init = -Wall -g --std=c++11 -O3 -DNDEBUG -DNew_Initialization  -DWarmStart -DRecordr_min -DArcRemoval -DInvestigatePotentialAtArcRemoval #-DVERBOSE
+CCFLAGS_phi = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DRecordPhi -DInvestigatePotentialAtArcRemoval -DArcRemoval #-DVERBOSE
+CCFLAGS_r_max = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DRecordr_max -DArcRemoval -DInvestigatePotentialAtArcRemoval #-DVERBOSE
+CCFLAGS_Check_Primal = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DArcRemoval -DCHECKPRIMAL -DInvestigatePotentialAtArcRemoval #-DVERBOSE 
+CCFLAGS_PotentialReductionGapVariation_arc_removal = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DPontentialReductionGapVariation -DArcRemoval -DInvestigatePotentialAtArcRemoval
+CCFLAGS_PotentialReductionGapVariation = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DPontentialReductionGapVariation -DArcRemoval -DInvestigatePotentialAtArcRemoval
+CCFLAGS_ElectricalFlowGapVariation_arc_removal = -Wall -g --std=c++11 -O3 -DNDEBUG -DElectricalFlowGap -DWarmStart -DArcRemoval -DInvestigatePotentialAtArcRemoval
+CCFLAGS_TCN = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DArcRemoval -DInvestigatePotentialAtArcRemoval -DRecordTCN #-DVERBOSE 
+CCFLAGS_Elec_without_Warm_Start = -Wall -g --std=c++11 -O3 -DNDEBUG -DRecordElectricalFlowIterations #-DVERBOSE
+CCFLAGS_Elec = -Wall -g --std=c++11 -O3 -DNDEBUG -DRecordElectricalFlowIterations -DWarmStart 
+CCFLAGS_Record_Potential = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DRecordPotential 
+CCFLAGS_Record_Potential_new_init = -Wall -g --std=c++11 -O3 -DNDEBUG -DWarmStart -DRecordPotential -DNew_Initialization
+N ?= 0
+
+default: min_cost_flow_read_graph_potential_wo_new_init \  
+    min_cost_flow_read_graph_elec_itrs_without_arc_removal_with_ws \
+    min_cost_flow_read_graph_new_init \
+    min_cost_flow_read_graph_elec_itrs_with_arc_removal_without_ws \   
+    min_cost_flow_read_graph_rho_with_new_init \
+    min_cost_flow_read_graph_potential_wo_new_init \
+    min_cost_flow_read_graph_potential_with_new_init \
+    min_cost_flow_read_graph_gap_variation_without_delta_wye \ 
+    min_cost_flow_read_graph_with_delta_wye_check_primal \
+    min_cost_flow_read_graph_without_delta_wye_r_max_variation \
+    min_cost_flow_read_graph_without_rho_variation \
+    min_cost_flow_random_gen_with_delta_wye_warm_start \
+    min_cost_flow_random_gen_with_delta_wye_normal \ 
+    min_cost_flow_random_gen_warm_start \
+    min_cost_flow_random_gen_with_delta_wye_arc_removal \  
+    min_cost_flow_read_graph_gap_variation_elec \ 
+    min_cost_flow_read_graph_with_delta_wye_phi_variation \
+    min_cost_flow_read_graph_with_delta_wye_r_max_variation \ 
+    min_cost_flow_read_graph_normal_delta_wye \ 
+    min_cost_flow_read_graph_warm_start \
+    min_cost_flow_read_graph_arc_removal \
+    min_cost_flow_read_graph_normal \
+    min_cost_flow_read_graph_warm_start_normal \
+    min_cost_flow_read_graph_elec_itrs_without_warm_start_normal \ 
+    min_cost_flow_read_graph_elec_itrs_normal \ 
+    min_cost_flow_read_graph_elec_itrs \
+    min_cost_flow_read_graph_elec_itrs_without_warm_start \ 
+    min_cost_flow_read_graph_stretch_variation_normal \
+    min_cost_flow_read_graph_stretch_variation_delta_wye \ 
+    min_cost_flow_read_graph_warm_start \
+    min_cost_flow_read_graph_arc_removal \
+    min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs \
+    min_cost_flow_random_gen_stretch_variation_delta_wye \
+    min_cost_flow_random_gen_stretch_variation_normal \ 
+    min_cost_flow_read_graph_estimate_constant_warm_start \
+    min_cost_flow_read_graph_estimate_constant_warm_start_delta_wye \
+    min_cost_flow_read_graph_potential_at_arc_removal \
+    min_cost_flow_read_graph_rho_variation \
+    min_cost_flow_read_graph_gap_variation \
+    min_cost_flow_random_gen_with_delta_wye_check_primal \
+    min_cost_flow_random_gen_with_gap_variation \
+    min_cost_flow_random_gen_with_gap_variation_arc_removal \
+    min_cost_flow_random_gen_with_delta_wye_r_max_variation \
+    min_cost_flow_random_gen_with_delta_wye_phi_variation \
+    min_cost_flow_random_gen_with_delta_wye_rho_variation \
+    min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal \
+    min_cost_flow_random_gen_normal 
+    
+    
+min_cost_flow_read_graph_potential_wo_new_init: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Record_Potential) min_cost_flow_read_graph.cpp -o read_graph_pot_variation_wo_new_init
+
+min_cost_flow_read_graph_potential_with_new_init: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Record_Potential_new_init) min_cost_flow_read_graph.cpp -o read_graph_pot_variation_with_new_init
+
+min_cost_flow_read_graph_rho_with_new_init: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_rho_new_init) min_cost_flow_read_graph.cpp -o read_graph_rho_variation_with_new_init
+
+min_cost_flow_read_graph_without_rho_variation: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_rho) min_cost_flow_read_graph.cpp -o read_graph_without_delta_wye_rho_variation
+
+min_cost_flow_read_graph_without_delta_wye_r_max_variation: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_r_max) min_cost_flow_read_graph.cpp -o read_graph_without_delta_wye_r_max_variation	
+
+min_cost_flow_read_graph_normal: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Normal) min_cost_flow_read_graph.cpp -o read_graph_normal
+
+min_cost_flow_read_graph_normal_delta_wye: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Normal) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_normal_delta_wye
+	
+min_cost_flow_read_graph_warm_start_normal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_read_graph.cpp -o read_graph_warm_start_normal
+	
+min_cost_flow_read_graph_warm_start: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_warm_start
+
+min_cost_flow_read_graph_new_init: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_new_init) min_cost_flow_read_graph.cpp -o read_graph_new_init
+	
+min_cost_flow_read_graph_arc_removal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_ArcRemoval) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_arc_removal
+
+min_cost_flow_read_graph_gap_variation: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialReductionGapVariation_arc_removal) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_gap_variation
+
+min_cost_flow_read_graph_gap_variation_without_delta_wye: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialReductionGapVariation_arc_removal) min_cost_flow_read_graph.cpp -o read_graph_gap_variation_without_delta_wye
+
+min_cost_flow_read_graph_gap_variation_elec: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_ElectricalFlowGapVariation_arc_removal) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_gap_variation_elec		
+
+min_cost_flow_read_graph_stretch_variation_delta_wye: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_TCN) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_stretch_variation
+	
+min_cost_flow_read_graph_stretch_variation_normal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_TCN) min_cost_flow_read_graph.cpp -o read_graph_stretch_variation_normal
+	
+min_cost_flow_read_graph_potential_at_arc_removal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialAtArcRemoval) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_potential_at_arc_removal
+
+min_cost_flow_read_graph_estimate_constant_warm_start: min_cost_flow_read_graph.cpp graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_estimate_constant_warm_start
+	
+min_cost_flow_read_graph_estimate_constant_warm_start_delta_wye: min_cost_flow_read_graph_with_delta_wye.cpp graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_estimate_constant_warm_start_delta_wye
+
+min_cost_flow_read_graph_rho_variation: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_rho) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_rho_variation
+
+min_cost_flow_read_graph_with_delta_wye_r_max_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_r_max) min_cost_flow_read_graph_with_delta_wye.cpp -o min_cost_flow_read_graph_with_delta_wye_r_max_variation	
+
+min_cost_flow_read_graph_with_delta_wye_phi_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_phi) min_cost_flow_read_graph_with_delta_wye.cpp -o min_cost_flow_read_graph_with_delta_wye_phi_variation
+	
+min_cost_flow_read_graph_elec_itrs_normal:  min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec) min_cost_flow_read_graph.cpp -o read_graph_elec_itrs_normal
+	
+min_cost_flow_read_graph_elec_itrs: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_elec_itrs
+
+min_cost_flow_read_graph_elec_itrs_with_arc_removal_without_ws: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec_with_arc_removal_without_ws) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_elec_itrs_with_arc_removal_without_ws
+
+min_cost_flow_read_graph_elec_itrs_without_arc_removal_with_ws: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec_without_arc_removal_with_ws) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_elec_itrs_without_arc_removal_with_ws
+
+min_cost_flow_read_graph_elec_itrs_without_warm_start: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec_without_Warm_Start) min_cost_flow_read_graph_with_delta_wye.cpp -o read_graph_elec_itrs_without_warm_start
+	
+min_cost_flow_read_graph_elec_itrs_without_warm_start_normal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec_without_Warm_Start) min_cost_flow_read_graph.cpp -o read_graph_elec_itrs_without_warm_start_normal
+	
+min_cost_flow_random_gen_normal: min_cost_flow_random_gen.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Normal) min_cost_flow_random_gen.cpp -o min_cost_flow_random_gen_normal
+
+min_cost_flow_random_gen_with_delta_wye_normal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Normal) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_normal
+	
+min_cost_flow_random_gen_warm_start: min_cost_flow_random_gen.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_random_gen.cpp -o min_cost_flow_random_gen_warm_start
+	
+min_cost_flow_random_gen_with_delta_wye_warm_start: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_warm_start) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_warm_start
+	
+min_cost_flow_random_gen_with_delta_wye_arc_removal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_ArcRemoval) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_arc_removal
+	
+min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialAtArcRemoval) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal
+
+min_cost_flow_random_gen_with_delta_wye_rho_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_rho) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_rho_variation
+
+min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Elec) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs
+	
+min_cost_flow_random_gen_with_delta_wye_phi_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_phi) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_phi_variation
+	
+min_cost_flow_random_gen_with_gap_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialReductionGapVariation) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_gap_variation
+
+min_cost_flow_random_gen_with_gap_variation_arc_removal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_PotentialReductionGapVariation_arc_removal) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_gap_variation_arc_removal
+	
+min_cost_flow_random_gen_with_delta_wye_r_max_variation: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_r_max) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_r_max_variation
+
+min_cost_flow_random_gen_with_delta_wye_check_primal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Check_Primal) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye_check_primal
+
+min_cost_flow_read_graph_with_delta_wye_check_primal: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_Check_Primal) min_cost_flow_read_graph_with_delta_wye.cpp -o min_cost_flow_read_graph_with_delta_wye_check_primal
+	
+min_cost_flow_random_gen_stretch_variation_delta_wye: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_TCN) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_stretch_variation_delta_wye
+
+min_cost_flow_random_gen_stretch_variation_normal: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction_DS.h electrical_flow_problem_DS.h min_cost_flow.h unbounded_integers.h
+	$(CC) $(CCFLAGS_TCN) min_cost_flow_random_gen.cpp -o min_cost_flow_random_gen_stretch_variation_normal
+	
+min_cost_flow_read_graph: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h
+	$(CC) $(CCFLAGS) min_cost_flow_read_graph.cpp -o min_cost_flow_read_graph
+
+print_graphlp: print_graphlp.cpp graph.h potential_reduction.h electrical_flow_problem.h unbounded_integers.h
+	$(CC) $(CCFLAGS) print_graphlp.cpp -o print_graphlp
+
+min_cost_flow_crossover: min_cost_flow_crossover.cpp  simple_solver.h graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h min_cost_crossover.h unbounded_integers.h
+	$(CC) $(CCFLAGS) min_cost_flow_crossover.cpp -o min_cost_flow_crossover	
+	
+exec:	  N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_warm_start >> exp_to_estimate_constant_warm_start_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_warm_start >> exp_to_estimate_constant_warm_start_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_warm_start >> exp_to_estimate_constant_warm_start_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_warm_start >> exp_to_estimate_constant_warm_start_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_warm_start >> exp_to_estimate_constant_warm_start_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	  N=0;\
+	 while [ $${N} -le 50]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_arc_removal >> exp_to_estimate_constant_delta_wye_arc_removal1; \
+	  N=`expr $$N + 1`; \
+	 done 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_arc_removal >> exp_to_estimate_constant_delta_wye_arc_removal1; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_arc_removal >> exp_to_estimate_constant_delta_wye_arc_removal1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 50]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_arc_removal >> exp_to_estimate_constant_delta_wye_arc_removal1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_arc_removal >> exp_to_estimate_constant_delta_wye_arc_removal1; \
+	  N=`expr $$N + 1`; \
+	 done
+	  N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye1; \
+	  N=`expr $$N + 1`; \
+	 done	
+	N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done
+	  N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 312 |./min_cost_flow_random_gen_normal >> exp_to_estimate_constant_normal; \
+	  N=`expr $$N + 1`; \
+	 done
+	  N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 312 |./min_cost_flow_random_gen_with_delta_wye_normal >> exp_to_estimate_constant_normal_delta_wye; \
+	  N=`expr $$N+ 1`; \
+	 done
+	  N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N + 1`; \
+	 done 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N + 1`; \
+	 done	 
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 50 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N + 1`; \
+	 done
+	  N=0;\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 312 |./min_cost_flow_random_gen_warm_start >> exp_to_estimate_constant_warm_start; \
+	  N=`expr $$N+ 1`; \
+	 done	
+	 echo graph32.graphml | ./read_graph_gap_variation_elec >> exp_read_graph_gap_variation_image_elec_32 
+	 
+	  echo graph128.graphml | ./read_graph_normal >> exp_read_graph_normal_image_128
+	  echo graph128.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_image_128
+	  echo graph128.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_image_128
+	  
+	  echo graph256.graphml | ./read_graph_normal >> exp_read_graph_normal_image_256
+	  echo graph256.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_image_256
+	  echo graph256.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_image_256
+	  
+	  echo graph64.graphml | ./read_graph_normal >> exp_read_graph_normal_image_64
+	  echo graph64.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_image_64
+	  echo graph64.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_image_64
+	  
+	  echo graph32.graphml | ./read_graph_normal >> exp_read_graph_normal_image_32
+	  echo graph32.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_image_32
+	  echo graph32.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_image_32
+	   
+	  echo graph_64.graphml | ./min_cost_flow_read_graph_with_delta_wye_r_max_variation >> exp_read_graph_r_max_image
+	  echo graph_64.graphml | ./min_cost_flow_read_graph_with_delta_wye_phi_variation >> exp_read_graph_phi_image
+	  
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs_normal >> exp_read_graph_elec_itrs_normal_dimacs1
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs_delta_wye_dimacs1
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs_without_warm_start_normal >> exp_read_graph_elec_itrs_normal_without_warm_start_dimacs1
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs_without_warm_start >> exp_read_graph_elec_itrs_delta_wye_without_warm_start_dimacs1
+	  
+	  
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd3.graphml | ./read_graph_normal_delta_wye >> exp_read_normal_delta_wye_dimacs_stnd3
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd3.graphml | ./read_graph_warm_start >> exp_read_warm_start_delta_wye_dimacs_stnd3
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd3.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_dimacs_stnd3
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd3.graphml | ./read_graph_normal >> exp_read_graph_normal_dimacs_stnd3
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd3.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_normal_dimacs_stnd3
+	  
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd53.graphml | ./read_graph_normal_delta_wye >> exp_read_normal_delta_wye_dimacs_stnd53
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd53.graphml | ./read_graph_warm_start >> exp_read_warm_start_delta_wye_dimacs_stnd53
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd53.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_dimacs_stnd53
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd53.graphml | ./read_graph_normal >> exp_read_graph_normal_dimacs_stnd53
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd53.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_normal_dimacs_stnd53
+
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_normal_delta_wye >> exp_read_normal_delta_wye_dimacs_stnd1
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_warm_start >> exp_read_warm_start_delta_wye_dimacs_stnd1
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_dimacs_stnd1
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_normal >> exp_read_graph_normal_dimacs_stnd1
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_normal_dimacs_stnd1
+	  
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_normal_delta_wye >> exp_read_normal_delta_wye_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_warm_start >> exp_read_warm_start_delta_wye_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_arc_removal >> exp_read_arc_removal_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_normal >> exp_read_graph_normal_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_warm_start_normal >> exp_read_graph_warm_start_normal_dimacs
+	  
+	  
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_stretch_variation_normal >> exp_read_graph_stretch_normal_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_stretch_variation >> exp_read_graph_stretch_delta_wye_dimacs
+	  
+	  echo graph.graphml | ./read_graph_elec_itrs_normal >> exp_read_graph_elec_itrs_normal
+	  echo graph.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs_delta_wye
+	  echo graph.graphml | ./read_graph_elec_itrs_without_warm_start_normal >> exp_read_graph_elec_itrs_normal_without_warm_start
+	  echo graph.graphml | ./read_graph_elec_itrs_without_warm_start >> exp_read_graph_elec_itrs_delta_wye_without_warm_start
+	  
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs_normal >> exp_read_graph_elec_itrs_normal_dimacs
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs_delta_wye_dimacs
+	  echo graph.graphml | ./read_graph_stretch_variation_normal >> exp_read_graph_stretch_normal
+	  echo graph.graphml | ./read_graph_stretch_variation >> exp_read_graph_stretch_delta_wye
+	  echo /home/avadapal/electrical_flow/data/netg/stndrd1.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs_stndrd1
+	  echo graph.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs_image
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_elec_itrs >> exp_read_graph_elec_itrs
+	  N=0
+	  N=$(N);\
+	 while [ $${N} -le 2 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs >> exp_to_estimate_electrical_flow_itr; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 2 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs >> exp_to_estimate_electrical_flow_itr; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 2 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs >> exp_to_estimate_electrical_flow_itr; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 2]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs >> exp_to_estimate_electrical_flow_itr; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 2 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_electrical_flow_itrs >> exp_to_estimate_electrical_flow_itr; \
+	  N=`expr $$N + 1`; \
+	 done	  
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_check_primal >> exp_to_estimate_primal_dual_steps; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_check_primal >> exp_to_estimate_primal_dual_steps; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_check_primal >> exp_to_estimate_primal_dual_steps; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_check_primal >> exp_to_estimate_primal_dual_steps; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_check_primal >> exp_to_estimate_primal_dual_steps; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_gap_variation >> exp_to_estimate_gap_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_gap_variation >> exp_to_estimate_gap_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_gap_variation >> exp_to_estimate_gap_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_gap_variation >> exp_to_estimate_gap_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 100 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_gap_variation >> exp_to_estimate_gap_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_r_max_variation >> exp_to_estimate_r_max_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_r_max_variation >> exp_to_estimate_r_max_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_r_max_variation >> exp_to_estimate_r_max_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_r_max_variation >> exp_to_estimate_r_max_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_r_max_variation >> exp_to_estimate_r_max_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_phi_variation >> exp_to_estimate_phi_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_phi_variation >> exp_to_estimate_phi_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_phi_variation >> exp_to_estimate_phi_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_phi_variation >> exp_to_estimate_phi_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_phi_variation >> exp_to_estimate_phi_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_rho_variation >> exp_to_estimate_rho_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_rho_variation >> exp_to_estimate_rho_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_rho_variation >> exp_to_estimate_rho_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_rho_variation >> exp_to_estimate_rho_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_rho_variation >> exp_to_estimate_rho_variation; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 10 ]; \
+	 do \
+	  echo $$N; \
+	  echo 16 |./min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal >> exp_to_estimate_potential_arc_removal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 30 ]; \
+	 do \
+	  echo $$N; \
+	  echo 32 |./min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal >> exp_to_estimate_potential_arc_removal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 64 |./min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal >> exp_to_estimate_potential_arc_removal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 40 ]; \
+	 do \
+	  echo $$N; \
+	  echo 128 |./min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal >> exp_to_estimate_potential_arc_removal; \
+	  N=`expr $$N + 1`; \
+	 done
+	 N=0
+	 N=$(N);\
+	 while [ $${N} -le 20 ]; \
+	 do \
+	  echo $$N; \
+	  echo 256 |./min_cost_flow_random_gen_with_delta_wye_potential_at_arc_removal >> exp_to_estimate_potential_arc_removal; \
+	  N=`expr $$N + 1`; \
+	 done
+	  echo graph.graphml | ./read_graph_estimate_constant_warm_start_delta_wye >> exp_read_graph_warm_start_delta_wye_image 
+	  echo graph.graphml | ./read_graph_estimate_constant_warm_start >> exp_read_graph_warm_start_image 
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_estimate_constant_warm_start_delta_wye >> exp_read_graph_warm_start_delta_wye 
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_estimate_constant_warm_start >> exp_read_graph_warm_start 
+	  echo /home/avadapal/electrical_flow/data/dimacs_bad_instances/gte_bad.65330.graphml | ./read_graph_potential_at_arc_removal >> exp_read_graph_potential_at_arc_removal_image 
+	  echo graph.graphml | ./read_graph_rho_variation >> exp_read_graph_rho_variation_image 
+	  echo graph.graphml | ./read_graph_gap_variation >> exp_read_graph_gap_variation_image 
+	  
+	 
+clean: 
+	rm -f electrical_flow min_cost_flow_random_gen min_cost_flow_read_graph
+        
+
+

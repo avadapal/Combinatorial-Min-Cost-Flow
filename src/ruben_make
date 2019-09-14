@@ -1,0 +1,233 @@
+CC = clang++
+CCFLAGS_LEMON = -Wall -g --std=c++11 -lemon -I /home/avadapal/lemon/include -L /home/avadapal/lemon/lib -lgmpxx -lgmp -O3 #-DNDEBUG #-DVERBOSE
+CCFLAGS_GMP = -Wall -g --std=c++11 -lgmpxx -lgmp -O3 -DNDEBUG #-DVERBOSE 
+CCFLAGS = -Wall -g --std=c++14 -O3 -DArcRemoval -DWarmStart -DNew_Initialization -I /opt/local/include #-DNDEBUG #-DVERBOSE
+CCFLAGS_delta_wye = -Wall -g --std=c++11 -O3 -DArcRemoval -DWarmStart  #-DNDEBUG  #-DVERBOSE
+
+# hq: hybrid queue
+# rbn: restore balanced nodes
+# snas: always select the same start node
+# snbal: select the same node until balanced, then the next node
+# snbaldef: select the same node until balanced, then the node with the most absolute deficit
+# def0: stop iteration if deficit_s reaches 0
+# sc: stop iteration if the sign of deficit_s changes
+# nsc: stop iteration if the sign of a new node is different to the sign of the start node
+# def0_X/sc_X: every X iterations explore the entire graph
+
+default: \
+	min_cost_flow_generic \
+	min_cost_flow_generic_hq \
+	min_cost_flow_generic_rbn \
+	min_cost_flow_generic_rbn_hq \
+	min_cost_flow_generic_snas \
+	min_cost_flow_generic_snbal_rbn \
+	min_cost_flow_generic_def0 \
+	min_cost_flow_generic_def0_3 \
+	min_cost_flow_generic_def0_5 \
+	min_cost_flow_generic_def0_10 \
+	min_cost_flow_generic_hq_def0 \
+	min_cost_flow_generic_rbn_def0 \
+	min_cost_flow_generic_rbn_hq_def0 \
+	min_cost_flow_generic_snbal_rbn_def0 \
+	min_cost_flow_generic_sc \
+	min_cost_flow_generic_sc_3 \
+	min_cost_flow_generic_sc_5 \
+	min_cost_flow_generic_sc_10 \
+	min_cost_flow_generic_nsc \
+	min_cost_flow_generic_nsc_3 \
+	min_cost_flow_generic_nsc_5 \
+	min_cost_flow_generic_nsc_10 \
+	min_cost_flow_generic_rc \
+	min_cost_flow_generic_debug \
+	min_cost_flow_read_graph_sspvariant \
+	pgm2graph \
+	recursion \
+	recursion-variant \
+	recursion2threads \
+		#min_cost_flow_random_gen_path_following min_cost_flow_read_graph_path_following 
+    #\
+    #min_cost_flow_read_graph \
+    #min_cost_flow_random_gen \
+    #min_cost_flow_read_graph_with_delta_wye \
+    #min_cost_flow_random_gen_with_delta_wye \
+    #min_cost_flow_random_gen_gmp \
+    #min_cost_flow_random_gen_gmp_with_delta_wye \
+    #min_cost_flow_read_graph_gmp  #lemon_capacity_scaling lemon_cycle_cancelling lemon_network_simplex  #min_cost_flow_read_graph #print_graphlp min_cost_flow_crossover
+
+min_cost_flow_generic: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) min_cost_flow_generic.cpp -o min_cost_flow_generic
+
+min_cost_flow_generic_hq: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DUSE_HYBRID_QUEUE min_cost_flow_generic.cpp -o min_cost_flow_generic_hq
+
+min_cost_flow_generic_rbn: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DRESTORE_BALANCED_NODES min_cost_flow_generic.cpp -o min_cost_flow_generic_rbn
+
+min_cost_flow_generic_rbn_hq: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DRESTORE_BALANCED_NODES -DUSE_HYBRID_QUEUE min_cost_flow_generic.cpp -o min_cost_flow_generic_rbn_hq
+
+min_cost_flow_generic_snas: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTART_NODE_SELECTION_METHOD=1 min_cost_flow_generic.cpp -o min_cost_flow_generic_snas
+
+min_cost_flow_generic_snbal_rbn: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTART_NODE_SELECTION_METHOD=2 -DRESTORE_BALANCED_NODES min_cost_flow_generic.cpp -o min_cost_flow_generic_snbal_rbn
+
+min_cost_flow_generic_def0: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_IS_ZERO min_cost_flow_generic.cpp -o min_cost_flow_generic_def0
+	
+min_cost_flow_generic_def0_3: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_IS_ZERO -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=3 min_cost_flow_generic.cpp -o min_cost_flow_generic_def0_3
+
+min_cost_flow_generic_def0_5: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_IS_ZERO -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=5 min_cost_flow_generic.cpp -o min_cost_flow_generic_def0_5
+
+min_cost_flow_generic_def0_10: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_IS_ZERO -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=10 min_cost_flow_generic.cpp -o min_cost_flow_generic_def0_10
+
+min_cost_flow_generic_hq_def0: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DUSE_HYBRID_QUEUE -DSTOP_IF_DEFICIT_IS_ZERO min_cost_flow_generic.cpp -o min_cost_flow_generic_hq_def0
+
+min_cost_flow_generic_rbn_def0: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DRESTORE_BALANCED_NODES -DSTOP_IF_DEFICIT_IS_ZERO min_cost_flow_generic.cpp -o min_cost_flow_generic_rbn_def0
+
+min_cost_flow_generic_rbn_hq_def0: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DRESTORE_BALANCED_NODES -DUSE_HYBRID_QUEUE -DSTOP_IF_DEFICIT_IS_ZERO min_cost_flow_generic.cpp -o min_cost_flow_generic_rbn_hq_def0
+
+min_cost_flow_generic_snbal_rbn_def0: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTART_NODE_SELECTION_METHOD=2 -DRESTORE_BALANCED_NODES -DSTOP_IF_DEFICIT_IS_ZERO min_cost_flow_generic.cpp -o min_cost_flow_generic_snbal_rbn_def0
+
+min_cost_flow_generic_sc: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_SIGN_CHANGES min_cost_flow_generic.cpp -o min_cost_flow_generic_sc
+
+min_cost_flow_generic_sc_3: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=3 min_cost_flow_generic.cpp -o min_cost_flow_generic_sc_3
+
+min_cost_flow_generic_sc_5: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=5 min_cost_flow_generic.cpp -o min_cost_flow_generic_sc_5
+
+min_cost_flow_generic_sc_10: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=10 min_cost_flow_generic.cpp -o min_cost_flow_generic_sc_10
+
+min_cost_flow_generic_nsc: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_NODE_DEFICIT_SIGN_CHANGES min_cost_flow_generic.cpp -o min_cost_flow_generic_nsc
+
+min_cost_flow_generic_nsc_3: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_NODE_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=3 min_cost_flow_generic.cpp -o min_cost_flow_generic_nsc_3
+
+min_cost_flow_generic_nsc_5: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_NODE_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=5 min_cost_flow_generic.cpp -o min_cost_flow_generic_nsc_5
+
+min_cost_flow_generic_nsc_10: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTOP_IF_NODE_DEFICIT_SIGN_CHANGES -DEXPLORE_ENTIRE_GRAPH_EVERY_X_ITERATIONS=10 min_cost_flow_generic.cpp -o min_cost_flow_generic_nsc_10
+
+min_cost_flow_generic_rc: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DRESP_CAP min_cost_flow_generic.cpp -o min_cost_flow_generic_rc
+
+min_cost_flow_generic_debug: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DSTART_NODE_SELECTION_METHOD=2 -DSTOP_IF_DEFICIT_IS_ZERO -DRESTORE_BALANCED_NODES min_cost_flow_generic.cpp -o min_cost_flow_generic_debug
+
+min_cost_flow_read_graph_sspvariant: min_cost_flow_read_graph_sspvariant.cpp electrical_flow_problem_unrounded.h  graph.h potential_reduction_path_following.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_read_graph_sspvariant.cpp -o min_cost_flow_read_graph_sspvariant
+
+min_cost_flow_random_gen_gmp: min_cost_flow_random_gen_gmp.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h gmp_helper.h random.h
+	$(CC) $(CCFLAGS_GMP) min_cost_flow_random_gen_gmp.cpp -o min_cost_flow_random_gen_gmp
+
+min_cost_flow_random_gen_gmp_with_delta_wye: min_cost_flow_random_gen_gmp_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h gmp_helper.h random.h
+	$(CC) $(CCFLAGS_GMP) min_cost_flow_random_gen_gmp_with_delta_wye.cpp -o min_cost_flow_random_gen_gmp_with_delta_wye 
+
+min_cost_flow_read_graph_gmp: min_cost_flow_read_graph_gmp.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h gmp_helper.h random.h
+	$(CC) $(CCFLAGS_GMP) min_cost_flow_read_graph_gmp.cpp -o min_cost_flow_read_graph_gmp
+
+lemon_capacity_scaling: lemon_capacity_scaling.cc
+			$(CC) $(CCFLAGS_LEMON) lemon_capacity_scaling.cc -o lemon_capacity_scaling
+lemon_cycle_cancelling: lemon_cycle_cancelling.cc
+			$(CC) $(CCFLAGS_LEMON) lemon_cycle_cancelling.cc -o lemon_cycle_cancelling
+lemon_network_simplex: lemon_network_simplex.cc
+	$(CC) $(CCFLAGS_LEMON) lemon_network_simplex.cc -o lemon_network_simplex
+
+electrical_flow: electrical_flow.cpp graph.h unbounded_integers.h
+	$(CC) $(CCFLAGS) electrical_flow.cpp -o electrical_flow
+
+min_cost_flow_random_gen: min_cost_flow_random_gen.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_random_gen.cpp -o min_cost_flow_random_gen
+
+min_cost_flow_random_gen_with_delta_wye: min_cost_flow_random_gen_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h  potential_reduction_DS.h electrical_flow_problem_DS.h random.h
+	$(CC) $(CCFLAGS_delta_wye) min_cost_flow_random_gen_with_delta_wye.cpp -o min_cost_flow_random_gen_with_delta_wye
+
+min_cost_flow_read_graph: min_cost_flow_read_graph.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_read_graph.cpp -o min_cost_flow_read_graph
+
+min_cost_flow_read_graph_with_delta_wye: min_cost_flow_read_graph_with_delta_wye.cpp  graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h rational_functions.h unbounded_integers.h random.h potential_reduction_DS.h electrical_flow_problem_DS.h
+	$(CC) $(CCFLAGS_delta_wye) min_cost_flow_read_graph_with_delta_wye.cpp -o min_cost_flow_read_graph_with_delta_wye
+
+min_cost_flow_read_graph_path_following: min_cost_flow_read_graph_path_following.cpp electrical_flow_problem_unrounded.h  graph.h potential_reduction_path_following.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_read_graph_path_following.cpp -o min_cost_flow_read_graph_path_following
+
+min_cost_flow_random_gen_path_following: min_cost_flow_random_gen_path_following.cpp electrical_flow_problem_unrounded.h  graph.h potential_reduction_path_following.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_random_gen_path_following.cpp -o min_cost_flow_random_gen_path_following
+
+print_graphlp: print_graphlp.cpp graph.h potential_reduction.h electrical_flow_problem.h unbounded_integers.h
+	$(CC) $(CCFLAGS) print_graphlp.cpp -o print_graphlp
+
+min_cost_flow_crossover: min_cost_flow_crossover.cpp  simple_solver.h graph.h potential_reduction.h electrical_flow_problem.h min_cost_flow.h min_cost_crossover.h unbounded_integers.h
+	$(CC) $(CCFLAGS) min_cost_flow_crossover.cpp -o min_cost_flow_crossover	
+
+min_cost_flow_random_gen_sspvariant: min_cost_flow_random_gen_sspvariant.cpp electrical_flow_problem_unrounded.h  graph.h potential_reduction_path_following.h electrical_flow_problem.h min_cost_flow.h unbounded_integers.h random.h
+	$(CC) $(CCFLAGS) min_cost_flow_random_gen_sspvariant.cpp -o min_cost_flow_random_gen_sspvariant
+
+pgm2graph: pgm2graph.cc gridflow.h bucketqueue.h
+	$(CC) $(CCFLAGS) pgm2graph.cc -o pgm2graph
+
+recursion: recursion.cc gridflow.h bucketqueue.h
+	$(CC) $(CCFLAGS) recursion.cc -o recursion
+
+recursion-variant: recursion.cc gridflow.h bucketqueue.h 
+	$(CC) $(CCFLAGS) -DSSP_VARIANT recursion.cc -o recursion-variant
+
+recursion2threads: recursion2threads.cc gridflow.h bucketqueue.h
+	$(CC) $(CCFLAGS) recursion2threads.cc -o recursion2threads -lpthread
+
+convert_to_dimacs: recursion.cc gridflow.h bucketqueue.h
+	$(CC) $(CCFLAGS) -DONLY_CONVERT_TO_DIMACS recursion.cc -o convert_to_dimacs
+
+output_graph_as_dimacs: min_cost_flow_generic.cpp graph.h random.h min_cost_flow_sspvariant.h min_cost_flow_sspvariant_default.h min_cost_flow_sspvariant_apex_grid.h ppmimage.h unbounded_integers.h bucketqueue.h
+	$(CC) $(CCFLAGS) output_graph_as_dimacs.cpp -o output_graph_as_dimacs
+
+exec: electrical_flow
+	./electrical_flow
+
+clean:
+	rm -f electrical_flow \
+	      min_cost_flow_random_gen \
+	      min_cost_flow_read_graph \
+	      min_cost_flow_generic \
+	      min_cost_flow_generic_hq \
+	      min_cost_flow_generic_rbn \
+	      min_cost_flow_generic_rbn_hq \
+	      min_cost_flow_generic_snas \
+	      min_cost_flow_generic_snbal_rbn \
+	      min_cost_flow_generic_def0 \
+	      min_cost_flow_generic_def0_3 \
+	      min_cost_flow_generic_def0_5 \
+	      min_cost_flow_generic_def0_10 \
+	      min_cost_flow_generic_hq_def0 \
+	      min_cost_flow_generic_rbn_def0 \
+	      min_cost_flow_generic_rbn_hq_def0 \
+	      min_cost_flow_generic_snbal_rbn_def0 \
+	      min_cost_flow_generic_sc \
+	      min_cost_flow_generic_sc_3 \
+	      min_cost_flow_generic_sc_5 \
+	      min_cost_flow_generic_sc_10 \
+	      min_cost_flow_generic_nsc \
+	      min_cost_flow_generic_nsc_3 \
+	      min_cost_flow_generic_nsc_5 \
+	      min_cost_flow_generic_nsc_10 \
+	      min_cost_flow_generic_rc \
+	      min_cost_flow_generic_debug \
+	      min_cost_flow_read_graph_sspvariant \
+	      pgm2graph \
+	      recursion \
+	      recursion2threads \
+	      recursion-variant \
+	      convert_to_dimacs \
+	      output_graph_as_dimacs

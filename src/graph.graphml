@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="key" attr.type="int" for="edge" id="d3" />
+  <key attr.name="costs" attr.type="int" for="edge" id="d2" />
+  <key attr.name="capacities" attr.type="int" for="edge" id="d1" />
+  <key attr.name="demands" attr.type="int" for="node" id="d0" />
+  <graph edgedefault="directed">
+    <node id="1">
+      <data key="d0">10</data>
+    </node>
+    <node id="2">
+      <data key="d0">-10</data>
+    </node>
+    <edge source="2" target="1">
+      <data key="d1">10</data>
+      <data key="d2">10</data>
+      <data key="d3">0</data>
+    </edge>
+  </graph>
+</graphml>

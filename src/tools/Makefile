@@ -1,0 +1,19 @@
+CCFLAGS = -Wall -g -O3 -std=c++11
+
+all: transform_results_into_columns transform_own_results_into_columns transform_goto_results_into_columns transform_own_results_into_columns_with_graph_and_method
+
+transform_results_into_columns: transform_results_into_columns.cc
+	g++ $(CCFLAGS) transform_results_into_columns.cc -o transform_results_into_columns
+
+transform_own_results_into_columns: transform_own_results_into_columns.cc
+	g++ $(CCFLAGS) transform_own_results_into_columns.cc -o transform_own_results_into_columns
+
+transform_goto_results_into_columns: transform_goto_results_into_columns.cc
+	g++ $(CCFLAGS) transform_goto_results_into_columns.cc -o transform_goto_results_into_columns
+
+transform_own_results_into_columns_with_graph_and_method: transform_own_results_into_columns_with_graph_and_method.cc
+	g++ $(CCFLAGS) transform_own_results_into_columns_with_graph_and_method.cc -o transform_own_results_into_columns_with_graph_and_method
+
+clean:
+	rm transform_results_into_columns transform_own_results_into_columns
+

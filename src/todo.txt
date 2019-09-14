@@ -1,0 +1,10 @@
+- move random capacity and cost generation from generator to create_graph
+- what about random resistance generation? Encapsulate in a function that does not need to be called when min-cost-flow is run?
+- why are the demands printed in compute_BFS..?
+- encapsulate every for ... cout << ... loop into a function to make code nicer
+- encapuslate compute max cap,cost
+- what does determine_t output?
+- put computeBFS, determine_t and so on all in one function compute_initial_soluiton
+-
+
+- document everything, this should be done during writing the code.
